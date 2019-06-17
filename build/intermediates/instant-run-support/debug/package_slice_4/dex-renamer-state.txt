@@ -1,0 +1,4 @@
+#Mon Jun 17 14:05:41 CST 2019
+base.0=/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/build/intermediates/transforms/dex/debug/folders/1000/5/slice_4
+renamed.0=classes.dex
+file.0=/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/build/intermediates/transforms/dex/debug/folders/1000/5/slice_4/classes.dex

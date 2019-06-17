@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="/Users/i_hfuhsu/Android/Raspberry_Pi_3/Snowboy/examples/Android/SnowboyAlexaDemo/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="c619b9862ae0f56fa3d8faeb2cf5d37fbcec7ff7">
+        <dex dex="/Users/i_hfuhsu/Android/Raspberry_Pi_3/Snowboy/examples/Android/SnowboyAlexaDemo/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_4701b2d072becb212b6158cb70d8a8540213a4ee/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/i_hfuhsu/Android/Raspberry_Pi_3/Snowboy/examples/Android/SnowboyAlexaDemo/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="c323c36ecc68965c4cfb460f7721113d2b61ed03">
+        <dex dex="/Users/i_hfuhsu/Android/Raspberry_Pi_3/Snowboy/examples/Android/SnowboyAlexaDemo/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_33387966d78bd6da39fbff37e229a8cb133f8048/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="c323c36ecc68965c4cfb460f7721113d2b61ed03">
+        <dex dex="/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_729bfb241d0436eb50508a8f7025f1ad7092ec03/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="e5428f3815494ed7e457a246811c2b89f1f794bb">
+        <dex dex="/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_8e2895511aa6ecce31a3dd65715e4a58438ec7e6/classes.dex" />
+    </item>
+
+</items>
