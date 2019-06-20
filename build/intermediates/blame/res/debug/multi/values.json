@@ -1,23 +1,23 @@
 [
     {
-        "outputFile": "/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/build/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
+        "outputFile": "/Users/i_hfuhsu/Android/Self/SnowBoyLyon/build/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
         "map": [
             {
                 "to": {
                     "startLine": 2,
                     "startColumn": 4,
                     "startOffset": 55,
-                    "endColumn": 53,
-                    "endOffset": 104
+                    "endColumn": 48,
+                    "endOffset": 99
                 },
                 "from": {
-                    "file": "/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/res/values/strings.xml",
+                    "file": "/Users/i_hfuhsu/Android/Self/SnowBoyLyon/res/values/strings.xml",
                     "position": {
                         "startLine": 2,
                         "startColumn": 4,
                         "startOffset": 73,
-                        "endColumn": 53,
-                        "endOffset": 122
+                        "endColumn": 48,
+                        "endOffset": 117
                     }
                 }
             },
@@ -25,76 +25,48 @@
                 "to": {
                     "startLine": 3,
                     "startColumn": 4,
-                    "startOffset": 109,
+                    "startOffset": 104,
                     "endColumn": 44,
-                    "endOffset": 149
+                    "endOffset": 144
                 },
                 "from": {
-                    "file": "/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/res/values/strings.xml",
-                    "position": {
-                        "startLine": 3,
-                        "startColumn": 1,
-                        "startOffset": 129,
-                        "endColumn": 41,
-                        "endOffset": 169
-                    }
+                    "file": "/Users/i_hfuhsu/Android/Self/SnowBoyLyon/res/values/strings.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 4,
                     "startColumn": 4,
-                    "startOffset": 154,
+                    "startOffset": 149,
                     "endColumn": 42,
-                    "endOffset": 192
+                    "endOffset": 187
                 },
                 "from": {
-                    "file": "/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/res/values/strings.xml",
-                    "position": {
-                        "startLine": 4,
-                        "startColumn": 4,
-                        "startOffset": 175,
-                        "endColumn": 42,
-                        "endOffset": 213
-                    }
+                    "file": "/Users/i_hfuhsu/Android/Self/SnowBoyLyon/res/values/strings.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 5,
                     "startColumn": 4,
-                    "startOffset": 197,
+                    "startOffset": 192,
                     "endColumn": 43,
-                    "endOffset": 236
+                    "endOffset": 231
                 },
                 "from": {
-                    "file": "/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/res/values/strings.xml",
-                    "position": {
-                        "startLine": 5,
-                        "startColumn": 4,
-                        "startOffset": 219,
-                        "endColumn": 43,
-                        "endOffset": 258
-                    }
+                    "file": "/Users/i_hfuhsu/Android/Self/SnowBoyLyon/res/values/strings.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 6,
                     "startColumn": 4,
-                    "startOffset": 241,
+                    "startOffset": 236,
                     "endColumn": 42,
-                    "endOffset": 279
+                    "endOffset": 274
                 },
                 "from": {
-                    "file": "/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/res/values/strings.xml",
-                    "position": {
-                        "startLine": 6,
-                        "startColumn": 4,
-                        "startOffset": 264,
-                        "endColumn": 42,
-                        "endOffset": 302
-                    }
+                    "file": "/Users/i_hfuhsu/Android/Self/SnowBoyLyon/res/values/strings.xml"
                 }
             }
         ]

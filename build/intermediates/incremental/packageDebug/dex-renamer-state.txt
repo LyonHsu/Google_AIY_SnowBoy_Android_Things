@@ -1,7 +1,7 @@
-#Mon Jun 17 14:05:41 CST 2019
-base.0=/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_8e2895511aa6ecce31a3dd65715e4a58438ec7e6
-renamed.1=classes.dex
-renamed.0=classes2.dex
-file.1=/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_729bfb241d0436eb50508a8f7025f1ad7092ec03/classes.dex
-base.1=/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_729bfb241d0436eb50508a8f7025f1ad7092ec03
-file.0=/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_8e2895511aa6ecce31a3dd65715e4a58438ec7e6/classes.dex
+#Tue Jun 18 19:06:14 CST 2019
+base.0=/Users/i_hfuhsu/Android/Self/SnowBoyLyon/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_28e776b8436fdee1549785d01b11c03ab741e633
+renamed.1=classes2.dex
+renamed.0=classes.dex
+file.1=/Users/i_hfuhsu/Android/Self/SnowBoyLyon/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_ebb16dc3c4837e8318bcff636f11c370ed05bb93/classes.dex
+base.1=/Users/i_hfuhsu/Android/Self/SnowBoyLyon/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_ebb16dc3c4837e8318bcff636f11c370ed05bb93
+file.0=/Users/i_hfuhsu/Android/Self/SnowBoyLyon/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_28e776b8436fdee1549785d01b11c03ab741e633/classes.dex
