@@ -5,4 +5,9 @@
     <string name="btn1_stop">Stop</string>
     <string name="btn2_start">Play</string>
     <string name="btn2_stop">Stop</string>
+
+    <string name="button_new_request">New Request</string>
+    <string name="button_retry">Retry</string>
+    <string name="button_listening">Listening</string>
+
 </resources>

@@ -1,0 +1,4 @@
+#Thu Jun 20 18:26:29 CST 2019
+base.0=/Users/i_hfuhsu/Android/Self/Google_AIY_SnowBoy_Android_Things/app/build/intermediates/transforms/dexMerger/debug/3
+path.0=classes.dex
+renamed.0=classes.dex
