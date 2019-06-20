@@ -15,6 +15,7 @@ import android.os.Message;
 import android.util.Log;
 
 import ai.kitt.snowboy.SnowboyDetect;
+import ai.kitt.snowboy.Utils;
 
 public class RecordingThread {
     static { System.loadLibrary("snowboy-detect-android"); }
@@ -91,18 +92,18 @@ public class RecordingThread {
         }
 
         byte[] audioBuffer = new byte[bufferSize];
-        AudioRecord record = new AudioRecord(
-            MediaRecorder.AudioSource.DEFAULT,
+        AudioRecord mAudioRecord = new AudioRecord(
+            MediaRecorder.AudioSource.VOICE_RECOGNITION,//MediaRecorder.AudioSource.DEFAULT //修改語音輸入位置
             Constants.SAMPLE_RATE,
             AudioFormat.CHANNEL_IN_MONO,
             AudioFormat.ENCODING_PCM_16BIT,
             bufferSize);
 
-        if (record.getState() != AudioRecord.STATE_INITIALIZED) {
+        if (mAudioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
             Log.e(TAG, "Audio Record can't initialize!");
             return;
         }
-        record.startRecording();
+        mAudioRecord.startRecording();
         if (null != listener) {
             listener.start();
         }
@@ -111,8 +112,12 @@ public class RecordingThread {
         long shortsRead = 0;
         detector.Reset();
         while (shouldContinue) {
-            record.read(audioBuffer, 0, audioBuffer.length);
-
+            int resultLyon =mAudioRecord.read(audioBuffer, 0, audioBuffer.length);
+            try {
+                Log.i("Snowboy: ", "Hotword Lyon " + Integer.toString(resultLyon) + " detected!");
+            }catch (Exception e){
+                Log.e(TAG,"Snowboy:  "+Utils.FormatStackTrace(e));
+            }
             if (null != listener) {
                 listener.onAudioDataReceived(audioBuffer, audioBuffer.length);
             }
@@ -125,7 +130,11 @@ public class RecordingThread {
 
             // Snowboy hotword detection.
             int result = detector.RunDetection(audioData, audioData.length);
-
+            try {
+//                Log.i("Snowboy: ", "Hotword " + Integer.toString(result) + " detected!");
+            }catch (Exception e){
+                Log.e(TAG,"Snowboy:  "+Utils.FormatStackTrace(e));
+            }
             if (result == -2) {
                 // post a higher CPU usage:
                 // sendMessage(MsgEnum.MSG_VAD_NOSPEECH, null);
@@ -141,8 +150,8 @@ public class RecordingThread {
             }
         }
 
-        record.stop();
-        record.release();
+        mAudioRecord.stop();
+        mAudioRecord.release();
 
         if (null != listener) {
             listener.stop();
