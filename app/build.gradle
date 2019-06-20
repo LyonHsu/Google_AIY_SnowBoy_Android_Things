@@ -4,6 +4,8 @@ android {
     defaultConfig {
         minSdkVersion 27
         targetSdkVersion 27
+        versionCode 1
+        versionName "1.1"
         applicationId 'ai.kitt.snowboy.demo'
     }
     buildTypes {
@@ -13,7 +15,7 @@ android {
     signingConfigs {
     }
 
-    compileOptions.encoding = 'ISO-8859-1'
+    compileOptions.encoding = 'UTF-8'
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'

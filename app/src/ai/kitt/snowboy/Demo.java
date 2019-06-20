@@ -4,6 +4,8 @@ import ai.kitt.snowboy.audio.RecordingThread;
 import ai.kitt.snowboy.audio.PlaybackThread;
 
 import android.app.Activity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +18,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Context;
+
+import org.w3c.dom.Text;
 
 import ai.kitt.snowboy.audio.AudioDataSaver;
 import ai.kitt.snowboy.demo.R;
@@ -49,6 +53,10 @@ public class Demo extends Activity {
         activeTimes = 0;
         recordingThread = new RecordingThread(handle, new AudioDataSaver());
         playbackThread = new PlaybackThread();
+
+        if(record_button!=null){
+            record_button.callOnClick();
+        }
     }
     
     void showToast(CharSequence msg) {
@@ -66,7 +74,11 @@ public class Demo extends Activity {
 
         log = (TextView)findViewById(R.id.log);
         logView = (ScrollView)findViewById(R.id.logView);
+
+        TextView versionTxt = (TextView)findViewById(R.id.versionTxt);
+        versionTxt.setText("ver:"+Utils.getAppVersionName(this)+" "+Utils.getAppVersion(this));
     }
+
     
     private void setMaxVolume() {
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
