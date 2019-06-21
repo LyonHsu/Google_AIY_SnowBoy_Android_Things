@@ -266,6 +266,7 @@ public class Demo extends Activity implements com.google.android.things.contrib.
                     showToast("Active "+activeTimes);
                     while (true){
                         if(recordingThread.getStatus()!=AudioRecord.RECORDSTATE_RECORDING){
+                            stopRecording();
                             buttonEventClick(true);
                             break;
                         }
@@ -391,7 +392,8 @@ public class Demo extends Activity implements com.google.android.things.contrib.
         mButtonWidget.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                mEmbeddedAssistant.startConversation();
+                if(mEmbeddedAssistant!=null)
+                    mEmbeddedAssistant.startConversation();
             }
         });
 
@@ -461,6 +463,7 @@ public class Demo extends Activity implements com.google.android.things.contrib.
 
 
         // Set volume from preferences
+        final String TAG = Demo.class.getSimpleName()+"_mEmbeddedAssistant";
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         int initVolume = preferences.getInt(PREF_CURRENT_VOLUME, DEFAULT_VOLUME);
         Log.i(TAG, "setting audio track volume to: " + initVolume);
@@ -500,7 +503,7 @@ public class Demo extends Activity implements com.google.android.things.contrib.
                             for (final SpeechRecognitionResult result : results) {
                                 Log.i(TAG, "assistant request text: " + result.getTranscript() +
                                         " stability: " + Float.toString(result.getStability()));
-                                mAssistantRequestsAdapter.add(result.getTranscript());
+                                mAssistantRequestsAdapter.add(result.getTranscript()+" stability: " + Float.toString(result.getStability()));
                             }
 
                             if(results.size()>0)
@@ -564,6 +567,7 @@ public class Demo extends Activity implements com.google.android.things.contrib.
                             Log.i(TAG, "assistant conversation finished");
                             mButtonWidget.setText(R.string.button_new_request);
                             mButtonWidget.setEnabled(true);
+                            startRecording();
                         }
 
                         @Override
