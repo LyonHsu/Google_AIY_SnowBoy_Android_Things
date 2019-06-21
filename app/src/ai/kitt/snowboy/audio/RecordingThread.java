@@ -1,5 +1,7 @@
 package ai.kitt.snowboy.audio;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -7,7 +9,9 @@ import java.nio.ByteOrder;
 import ai.kitt.snowboy.Constants;
 import ai.kitt.snowboy.MsgEnum;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioRecord;
+import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.media.MediaPlayer;
 import android.os.Handler;
@@ -36,7 +40,7 @@ public class RecordingThread {
     
     private SnowboyDetect detector = new SnowboyDetect(commonRes, activeModel);
     private MediaPlayer player = new MediaPlayer();
-
+    private AudioRecord mAudioRecord;
     public RecordingThread(Handler handler, AudioDataReceivedListener listener) {
         this.handler = handler;
         this.listener = listener;
@@ -81,6 +85,13 @@ public class RecordingThread {
         thread = null;
     }
 
+    public int getStatus(){
+        if(mAudioRecord!=null){
+            return mAudioRecord.getState();
+        }
+        return AudioRecord.STATE_UNINITIALIZED;
+    }
+
     private void record() {
         Log.v(TAG, "Start");
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_AUDIO);
@@ -98,6 +109,26 @@ public class RecordingThread {
             AudioFormat.CHANNEL_IN_MONO,
             AudioFormat.ENCODING_PCM_16BIT,
             bufferSize);
+
+
+
+        AudioFormat mAudioInputFormat = new AudioFormat.Builder()
+                .setChannelMask(Constants.AUDIO_CHANNEL)
+                .setEncoding(Constants.audioEncoding)
+                .setSampleRate(Constants.mSampleRate)
+                .build();
+        mAudioRecord = new AudioRecord.Builder()
+                .setAudioSource(Constants.AUDIO_INPUT)
+                .setAudioFormat(mAudioInputFormat)
+                .setBufferSizeInBytes(bufferSize)
+                .build();
+//        int playBufSize = AudioTrack.getMinBufferSize(Constants.frequency,
+//                Constants.AUDIO_CHANNEL, Constants.audioEncoding);
+//        AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, Constants.frequency,
+//                Constants.AUDIO_CHANNEL, Constants.audioEncoding,
+//                playBufSize, AudioTrack.MODE_STREAM);
+
+        Log.d(TAG, "Audio Record State:"+mAudioRecord.getState());
 
         if (mAudioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
             Log.e(TAG, "Audio Record can't initialize!");
@@ -121,7 +152,7 @@ public class RecordingThread {
             if (null != listener) {
                 listener.onAudioDataReceived(audioBuffer, audioBuffer.length);
             }
-            
+
             // Converts to short array.
             short[] audioData = new short[audioBuffer.length / 2];
             ByteBuffer.wrap(audioBuffer).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(audioData);
@@ -146,6 +177,7 @@ public class RecordingThread {
             } else if (result > 0) {
                 sendMessage(MsgEnum.MSG_ACTIVE, null);
                 Log.i("Snowboy: ", "Hotword " + Integer.toString(result) + " detected!");
+                shouldContinue=false;
                 player.start();
             }
         }
@@ -157,5 +189,6 @@ public class RecordingThread {
             listener.stop();
         }
         Log.v(TAG, String.format("Recording stopped. Samples read: %d", shortsRead));
+
     }
 }

@@ -58,6 +58,8 @@ public class AudioDataSaver implements AudioDataReceivedListener {
         }
     }
 
+
+    //儲存錄音檔
     @Override
     public void onAudioDataReceived(byte[] data, int length) {
         try {

@@ -55,6 +55,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import ai.kitt.snowboy.Constants;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.auth.MoreCallCredentials;
@@ -323,6 +324,7 @@ public class EmbeddedAssistant {
      * Starts a request to the Assistant.
      */
     public void startConversation() {
+        Log.d(TAG,"20190620 startConversation() ");
         mAudioRecord.startRecording();
         mRequestHandler.post(new Runnable() {
             @Override
@@ -577,6 +579,7 @@ public class EmbeddedAssistant {
          */
         public Builder setAudioSampleRate(int sampleRate) {
             mSampleRate = sampleRate;
+            Constants.mSampleRate=sampleRate;
             return this;
         }
 
@@ -650,7 +653,7 @@ public class EmbeddedAssistant {
             if (mSampleRate == 0) {
                 throw new NullPointerException("There must be a defined sample rate");
             }
-            final int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
+//            final int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
 
             // Construct audio configurations.
             mEmbeddedAssistant.mAudioInConfig = AudioInConfig.newBuilder()
@@ -666,7 +669,7 @@ public class EmbeddedAssistant {
             // Initialize Audio framework parameters.
             mEmbeddedAssistant.mAudioInputFormat = new AudioFormat.Builder()
                     .setChannelMask(AudioFormat.CHANNEL_IN_MONO)
-                    .setEncoding(audioEncoding)
+                    .setEncoding(Constants.audioEncoding)
                     .setSampleRate(mSampleRate)
                     .build();
             mEmbeddedAssistant.mAudioInputBufferSize = AudioRecord.getMinBufferSize(
@@ -674,8 +677,8 @@ public class EmbeddedAssistant {
                     mEmbeddedAssistant.mAudioInputFormat.getChannelMask(),
                     mEmbeddedAssistant.mAudioInputFormat.getEncoding());
             mEmbeddedAssistant.mAudioOutputFormat = new AudioFormat.Builder()
-                    .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
-                    .setEncoding(audioEncoding)
+                    .setChannelMask(Constants.AUDIO_CHANNEL)
+                    .setEncoding(Constants.audioEncoding)
                     .setSampleRate(mSampleRate)
                     .build();
             mEmbeddedAssistant.mAudioOutputBufferSize = AudioTrack.getMinBufferSize(
@@ -685,7 +688,7 @@ public class EmbeddedAssistant {
 
             // create new AudioRecord to workaround audio routing issues.
             mEmbeddedAssistant.mAudioRecord = new AudioRecord.Builder()
-                    .setAudioSource(AudioSource.VOICE_RECOGNITION)
+                    .setAudioSource(Constants.AUDIO_INPUT)
                     .setAudioFormat(mEmbeddedAssistant.mAudioInputFormat)
                     .setBufferSizeInBytes(mEmbeddedAssistant.mAudioInputBufferSize)
                     .build();

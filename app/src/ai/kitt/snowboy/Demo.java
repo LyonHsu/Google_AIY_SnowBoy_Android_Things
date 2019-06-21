@@ -14,6 +14,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
+import android.media.AudioRecord;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -263,6 +264,12 @@ public class Demo extends Activity implements com.google.android.things.contrib.
                     updateLog(" ----> Detected " + activeTimes + " times", "green");
                     // Toast.makeText(Demo.this, "Active "+activeTimes, Toast.LENGTH_SHORT).show();
                     showToast("Active "+activeTimes);
+                    while (true){
+                        if(recordingThread.getStatus()!=AudioRecord.RECORDSTATE_RECORDING){
+                            buttonEventClick(true);
+                            break;
+                        }
+                    }
                     break;
                 case MSG_INFO:
                     updateLog(" ----> "+message);
@@ -642,6 +649,10 @@ public class Demo extends Activity implements com.google.android.things.contrib.
 
     @Override
     public void onButtonEvent(com.google.android.things.contrib.driver.button.Button button, boolean pressed) {
+        buttonEventClick(pressed);
+    }
+
+    private void buttonEventClick( boolean pressed){
         try {
             if (mLed != null) {
                 String onOff="off";
