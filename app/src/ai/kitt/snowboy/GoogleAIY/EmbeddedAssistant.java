@@ -19,6 +19,7 @@ package ai.kitt.snowboy.GoogleAIY;
 import android.content.Context;
 import android.media.AudioDeviceInfo;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder.AudioSource;
@@ -56,6 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ai.kitt.snowboy.Constants;
+import ai.kitt.snowboy.Utils;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.auth.MoreCallCredentials;
@@ -89,7 +91,7 @@ public class EmbeddedAssistant {
     private AudioFormat mAudioInputFormat;
     private AudioFormat mAudioOutputFormat;
     private int mAudioInputBufferSize;
-    private int mAudioOutputBufferSize;
+    private int mAudioOutputBufferSize=0;
     private int mVolume = 100; // Default to maximum volume.
     private ScreenOutConfig mScreenOutConfig;
 
@@ -229,48 +231,64 @@ public class EmbeddedAssistant {
                 public void onCompleted() {
                     // create a new AudioTrack to workaround audio routing issues.
                     Log.d(TAG,"mAudioOutputFormat:"+mAudioOutputFormat);
-                    AudioTrack audioTrack = new AudioTrack.Builder()
-                            .setAudioFormat(mAudioOutputFormat)
-                            .setBufferSizeInBytes(mAudioOutputBufferSize)
-                            .setTransferMode(AudioTrack.MODE_STREAM)
-                            .build();
-                    if (mAudioOutputDevice != null) {
-                        audioTrack.setPreferredDevice(mAudioOutputDevice);
-                    }
-                    audioTrack.setVolume(AudioTrack.getMaxVolume() * mVolume / 100.0f);
-                    audioTrack.play();
-                    mConversationHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mConversationCallback.onResponseStarted();
+                    AudioTrack audioTrack;
+                    try {
+                        audioTrack = new AudioTrack.Builder()
+                                .setAudioFormat(mAudioOutputFormat)
+                                .setBufferSizeInBytes(mAudioOutputBufferSize)
+                                .setTransferMode(AudioTrack.MODE_STREAM)
+                                .build();
+                        if (mAudioOutputDevice != null) {
+                            audioTrack.setPreferredDevice(mAudioOutputDevice);
                         }
-                    });
-                    for (ByteBuffer audioData : mAssistantResponses) {
-                        final ByteBuffer buf = audioData;
+                        audioTrack.setVolume(AudioTrack.getMaxVolume() * mVolume / 100.0f);
+                        audioTrack.play();
                         mConversationHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                mConversationCallback.onAudioSample(buf);
+                                mConversationCallback.onResponseStarted();
                             }
                         });
-                        audioTrack.write(buf, buf.remaining(),
-                                AudioTrack.WRITE_BLOCKING);
-                    }
-                    mAssistantResponses.clear();
-                    audioTrack.stop();
-                    audioTrack.release();
-
-                    mConversationHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mConversationCallback.onResponseFinished();
+                        for (ByteBuffer audioData : mAssistantResponses) {
+                            final ByteBuffer buf = audioData;
+                            mConversationHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mConversationCallback.onAudioSample(buf);
+                                }
+                            });
+                            audioTrack.write(buf, buf.remaining(),
+                                    AudioTrack.WRITE_BLOCKING);
                         }
-                    });
-                    if (mMicrophoneMode == MicrophoneMode.DIALOG_FOLLOW_ON) {
-                        // Automatically start a new request
-                        startConversation();
-                    } else {
-                        // The conversation is done
+                        mAssistantResponses.clear();
+                        audioTrack.stop();
+                        audioTrack.release();
+
+                        mConversationHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mConversationCallback.onResponseFinished();
+                            }
+                        });
+                        if (mMicrophoneMode == MicrophoneMode.DIALOG_FOLLOW_ON) {
+                            // Automatically start a new request
+                            startConversation();
+                        } else {
+                            // The conversation is done
+                            mConversationHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mConversationCallback.onConversationFinished();
+                                }
+                            });
+                        }
+                    }catch (Exception e){
+                        mConversationHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mConversationCallback.onResponseFinished();
+                            }
+                        });
                         mConversationHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -278,6 +296,8 @@ public class EmbeddedAssistant {
                             }
                         });
                     }
+
+
                 }
             };
 
@@ -641,76 +661,79 @@ public class EmbeddedAssistant {
          * it.
          */
         public EmbeddedAssistant build() {
-            if (mEmbeddedAssistant.mRequestCallback == null) {
-                throw new NullPointerException("There must be a defined RequestCallback");
-            }
-            if (mEmbeddedAssistant.mConversationCallback == null) {
-                throw new NullPointerException("There must be a defined ConversationCallback");
-            }
-            if (mEmbeddedAssistant.mUserCredentials == null) {
-                throw new NullPointerException("There must be provided credentials");
-            }
-            if (mSampleRate == 0) {
-                throw new NullPointerException("There must be a defined sample rate");
-            }
+            try {
+                if (mEmbeddedAssistant.mRequestCallback == null) {
+                    throw new NullPointerException("There must be a defined RequestCallback");
+                }
+                if (mEmbeddedAssistant.mConversationCallback == null) {
+                    throw new NullPointerException("There must be a defined ConversationCallback");
+                }
+                if (mEmbeddedAssistant.mUserCredentials == null) {
+                    throw new NullPointerException("There must be provided credentials");
+                }
+                if (mSampleRate == 0) {
+                    throw new NullPointerException("There must be a defined sample rate");
+                }
 //            final int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
 
-            // Construct audio configurations.
-            mEmbeddedAssistant.mAudioInConfig = AudioInConfig.newBuilder()
-                    .setEncoding(AudioInConfig.Encoding.LINEAR16)
-                    .setSampleRateHertz(mSampleRate)
-                    .build();
-            mEmbeddedAssistant.mAudioOutConfig = AudioOutConfig.newBuilder()
-                    .setEncoding(AudioOutConfig.Encoding.LINEAR16)
-                    .setSampleRateHertz(mSampleRate)
-                    .setVolumePercentage(mEmbeddedAssistant.mVolume)
-                    .build();
+                // Construct audio configurations.
+                mEmbeddedAssistant.mAudioInConfig = AudioInConfig.newBuilder()
+                        .setEncoding(AudioInConfig.Encoding.LINEAR16)
+                        .setSampleRateHertz(mSampleRate)
+                        .build();
+                mEmbeddedAssistant.mAudioOutConfig = AudioOutConfig.newBuilder()
+                        .setEncoding(AudioOutConfig.Encoding.LINEAR16)
+                        .setSampleRateHertz(mSampleRate)
+                        .setVolumePercentage(mEmbeddedAssistant.mVolume)
+                        .build();
 
-            // Initialize Audio framework parameters.
-            mEmbeddedAssistant.mAudioInputFormat = new AudioFormat.Builder()
-                    .setChannelMask(AudioFormat.CHANNEL_IN_MONO)
-                    .setEncoding(Constants.audioEncoding)
-                    .setSampleRate(mSampleRate)
-                    .build();
-            mEmbeddedAssistant.mAudioInputBufferSize = AudioRecord.getMinBufferSize(
-                    mEmbeddedAssistant.mAudioInputFormat.getSampleRate(),
-                    mEmbeddedAssistant.mAudioInputFormat.getChannelMask(),
-                    mEmbeddedAssistant.mAudioInputFormat.getEncoding());
-            mEmbeddedAssistant.mAudioOutputFormat = new AudioFormat.Builder()
-                    .setChannelMask(Constants.AUDIO_CHANNEL)
-                    .setEncoding(Constants.audioEncoding)
-                    .setSampleRate(mSampleRate)
-                    .build();
-            mEmbeddedAssistant.mAudioOutputBufferSize = AudioTrack.getMinBufferSize(
-                    mEmbeddedAssistant.mAudioOutputFormat.getSampleRate(),
-                    mEmbeddedAssistant.mAudioOutputFormat.getChannelMask(),
-                    mEmbeddedAssistant.mAudioOutputFormat.getEncoding());
+                // Initialize Audio framework parameters.
+                mEmbeddedAssistant.mAudioInputFormat = new AudioFormat.Builder()
+                        .setChannelMask(AudioFormat.CHANNEL_IN_MONO)
+                        .setEncoding(Constants.audioEncoding)
+                        .setSampleRate(mSampleRate)
+                        .build();
+                mEmbeddedAssistant.mAudioInputBufferSize = AudioRecord.getMinBufferSize(
+                        mEmbeddedAssistant.mAudioInputFormat.getSampleRate(),
+                        mEmbeddedAssistant.mAudioInputFormat.getChannelMask(),
+                        mEmbeddedAssistant.mAudioInputFormat.getEncoding());
+                mEmbeddedAssistant.mAudioOutputFormat = new AudioFormat.Builder()
+                        .setChannelMask(Constants.AUDIO_CHANNEL)
+                        .setEncoding(Constants.audioEncoding)
+                        .setSampleRate(mSampleRate)
+                        .build();
+                mEmbeddedAssistant.mAudioOutputBufferSize = AudioTrack.getMinBufferSize(
+                        mEmbeddedAssistant.mAudioOutputFormat.getSampleRate(),
+                        mEmbeddedAssistant.mAudioOutputFormat.getChannelMask(),
+                        mEmbeddedAssistant.mAudioOutputFormat.getEncoding());
 
-            // create new AudioRecord to workaround audio routing issues.
-            mEmbeddedAssistant.mAudioRecord = new AudioRecord.Builder()
-                    .setAudioSource(Constants.AUDIO_INPUT)
-                    .setAudioFormat(mEmbeddedAssistant.mAudioInputFormat)
-                    .setBufferSizeInBytes(mEmbeddedAssistant.mAudioInputBufferSize)
-                    .build();
-            if (mEmbeddedAssistant.mAudioInputDevice != null) {
-                boolean result = mEmbeddedAssistant.mAudioRecord.setPreferredDevice(
-                        mEmbeddedAssistant.mAudioInputDevice);
-                if (!result) {
-                    Log.e(TAG, "failed to set preferred input device");
+                // create new AudioRecord to workaround audio routing issues.
+                mEmbeddedAssistant.mAudioRecord = new AudioRecord.Builder()
+                        .setAudioSource(Constants.AUDIO_INPUT)
+                        .setAudioFormat(mEmbeddedAssistant.mAudioInputFormat)
+                        .setBufferSizeInBytes(mEmbeddedAssistant.mAudioInputBufferSize)
+                        .build();
+                if (mEmbeddedAssistant.mAudioInputDevice != null) {
+                    boolean result = mEmbeddedAssistant.mAudioRecord.setPreferredDevice(
+                            mEmbeddedAssistant.mAudioInputDevice);
+                    if (!result) {
+                        Log.e(TAG, "failed to set preferred input device");
+                    }
                 }
+
+                // Construct DeviceConfig
+                mEmbeddedAssistant.mDeviceConfig = DeviceConfig.newBuilder()
+                        .setDeviceId(mDeviceInstanceId)
+                        .setDeviceModelId(mDeviceModelId)
+                        .build();
+
+                // Construct default ScreenOutConfig
+                mEmbeddedAssistant.mScreenOutConfig = ScreenOutConfig.newBuilder()
+                        .setScreenMode(ScreenOutConfig.ScreenMode.SCREEN_MODE_UNSPECIFIED)
+                        .build();
+            }catch (Exception e){
+                Log.e(TAG,""+Utils.FormatStackTrace(e));
             }
-
-            // Construct DeviceConfig
-            mEmbeddedAssistant.mDeviceConfig = DeviceConfig.newBuilder()
-                .setDeviceId(mDeviceInstanceId)
-                .setDeviceModelId(mDeviceModelId)
-                .build();
-
-            // Construct default ScreenOutConfig
-            mEmbeddedAssistant.mScreenOutConfig = ScreenOutConfig.newBuilder()
-                    .setScreenMode(ScreenOutConfig.ScreenMode.SCREEN_MODE_UNSPECIFIED)
-                    .build();
-
             return mEmbeddedAssistant;
         }
     }
