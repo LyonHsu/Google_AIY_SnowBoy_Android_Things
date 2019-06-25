@@ -250,6 +250,7 @@ public class Demo extends Activity implements com.google.android.things.contrib.
                 startPlayback();
             } else {
                 stopPlayback();
+                mEmbeddedAssistant.destroy();
             }
         }
     };
@@ -465,7 +466,7 @@ public class Demo extends Activity implements com.google.android.things.contrib.
         // Set volume from preferences
         final String TAG = Demo.class.getSimpleName()+"_mEmbeddedAssistant";
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        int initVolume = preferences.getInt(PREF_CURRENT_VOLUME, DEFAULT_VOLUME);
+        int initVolume = 70;//preferences.getInt(PREF_CURRENT_VOLUME, DEFAULT_VOLUME);
         Log.i(TAG, "setting audio track volume to: " + initVolume);
 
         UserCredentials userCredentials = null;
@@ -567,7 +568,18 @@ public class Demo extends Activity implements com.google.android.things.contrib.
                             Log.i(TAG, "assistant conversation finished");
                             mButtonWidget.setText(R.string.button_new_request);
                             mButtonWidget.setEnabled(true);
-                            startRecording();
+
+                            while (true){
+                                Log.i(TAG, "assistant onConversationFinished finished snowboy :"+mEmbeddedAssistant.getAudioRecordStatus());
+                                if(mEmbeddedAssistant.getAudioRecordStatus()!=AudioRecord.RECORDSTATE_RECORDING){
+
+                                    Log.i(TAG, "assistant conversation finished snowboy startRecording");
+//                                    stopPlayback();
+                                    sleep();
+                                    startRecording();
+                                    break;
+                                }
+                            }
                         }
 
                         @Override
@@ -634,6 +646,7 @@ public class Demo extends Activity implements com.google.android.things.contrib.
         AudioDeviceInfo[] adis = manager.getDevices(deviceFlag);
         for (AudioDeviceInfo adi : adis) {
             if (adi.getType() == deviceType) {
+                Log.d(TAG,"findAudioDevice:"+adi.toString());
                 return adi;
             }
         }

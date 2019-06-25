@@ -93,7 +93,7 @@ public class RecordingThread {
     }
 
     private void record() {
-        Log.v(TAG, "Start");
+        Log.v(TAG, "snowboy Start");
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_AUDIO);
 
         // Buffer size in bytes: for 0.1 second of audio
@@ -128,27 +128,27 @@ public class RecordingThread {
 //                Constants.AUDIO_CHANNEL, Constants.audioEncoding,
 //                playBufSize, AudioTrack.MODE_STREAM);
 
-        Log.d(TAG, "Audio Record State:"+mAudioRecord.getState());
+        Log.d(TAG, "snowboy Audio Record State:"+mAudioRecord.getState());
 
         if (mAudioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
-            Log.e(TAG, "Audio Record can't initialize!");
+            Log.e(TAG, "snowboy Audio Record can't initialize!");
             return;
         }
         mAudioRecord.startRecording();
         if (null != listener) {
             listener.start();
         }
-        Log.v(TAG, "Start recording");
+        Log.v(TAG, "snowboy Start recording");
 
         long shortsRead = 0;
         detector.Reset();
         while (shouldContinue) {
             int resultLyon =mAudioRecord.read(audioBuffer, 0, audioBuffer.length);
-            try {
-                Log.i("Snowboy: ", "Hotword Lyon " + Integer.toString(resultLyon) + " detected!");
-            }catch (Exception e){
-                Log.e(TAG,"Snowboy:  "+Utils.FormatStackTrace(e));
-            }
+//            try {
+//                Log.d("snowboy : ", "Hotword Lyon " + Integer.toString(resultLyon) + " detected!");
+//            }catch (Exception e){
+//                Log.e(TAG,"Snowboy :  "+Utils.FormatStackTrace(e));
+//            }
             if (null != listener) {
                 listener.onAudioDataReceived(audioBuffer, audioBuffer.length);
             }
@@ -161,14 +161,14 @@ public class RecordingThread {
 
             // Snowboy hotword detection.
             int result = detector.RunDetection(audioData, audioData.length);
-            try {
-//                Log.i("Snowboy: ", "Hotword " + Integer.toString(result) + " detected!");
-            }catch (Exception e){
-                Log.e(TAG,"Snowboy:  "+Utils.FormatStackTrace(e));
-            }
+//            try {
+//                Log.i("Snowboy : ", "Hotword " + Integer.toString(result) + " detected!");
+//            }catch (Exception e){
+//                Log.e(TAG,"Snowboy :  "+Utils.FormatStackTrace(e));
+//            }
             if (result == -2) {
                 // post a higher CPU usage:
-                // sendMessage(MsgEnum.MSG_VAD_NOSPEECH, null);
+//                 sendMessage(MsgEnum.MSG_VAD_NOSPEECH, null);
             } else if (result == -1) {
                 sendMessage(MsgEnum.MSG_ERROR, "Unknown Detection Error");
             } else if (result == 0) {

@@ -275,12 +275,13 @@ public class EmbeddedAssistant {
                             startConversation();
                         } else {
                             // The conversation is done
-                            mConversationHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mConversationCallback.onConversationFinished();
-                                }
-                            });
+//                            mConversationHandler.post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    mConversationCallback.onConversationFinished();
+//                                }
+//                            });
+                            stopConversation();
                         }
                     }catch (Exception e){
                         mConversationHandler.post(new Runnable() {
@@ -289,12 +290,7 @@ public class EmbeddedAssistant {
                                 mConversationCallback.onResponseFinished();
                             }
                         });
-                        mConversationHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                mConversationCallback.onConversationFinished();
-                            }
-                        });
+                        stopConversation();
                     }
 
 
@@ -413,6 +409,7 @@ public class EmbeddedAssistant {
      * Manually ends a conversation with the Assistant.
      */
     public void stopConversation() {
+        Log.d(TAG,"sonwboy stopConversation()");
         mAssistantHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -466,6 +463,10 @@ public class EmbeddedAssistant {
             mAudioRecord.stop();
             mAudioRecord = null;
         }
+    }
+
+    public int getAudioRecordStatus(){
+        return mAudioRecord.getState();
     }
 
     /**
