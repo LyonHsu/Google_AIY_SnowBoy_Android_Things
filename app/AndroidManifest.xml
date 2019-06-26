@@ -10,6 +10,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="ai.kitt.snowboy.Permissions.PermissionsActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="sensorLandscape"
+            />
     </application>
 
     <!--snowboy-->

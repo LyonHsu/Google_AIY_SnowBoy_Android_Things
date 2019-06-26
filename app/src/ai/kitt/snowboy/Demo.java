@@ -2,6 +2,8 @@ package ai.kitt.snowboy;
 
 import ai.kitt.snowboy.GoogleAIY.BoardDefaults;
 import ai.kitt.snowboy.GoogleAIY.EmbeddedAssistant;
+import ai.kitt.snowboy.Permissions.PermissionsActivity;
+import ai.kitt.snowboy.Permissions.PermissionsChecker;
 import ai.kitt.snowboy.Volume.VolumeDialog;
 import ai.kitt.snowboy.audio.RecordingThread;
 import ai.kitt.snowboy.audio.PlaybackThread;
@@ -123,22 +125,29 @@ public class Demo extends Activity implements com.google.android.things.contrib.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.main);
-        setUI();
-        
-        setProperVolume();
+        PermissionsChecker mPermissionsChecker = new PermissionsChecker(this);
+        // 缺少权限时, 进入权限配置页面
+        if (mPermissionsChecker.lacksPermissions(PermissionsActivity.PERMISSIONS)) {
+            //Toast.makeText(getBaseContext(),"start ask!!",Toast.LENGTH_SHORT).show();
+            PermissionsActivity.startActivityForResult(this, PermissionsActivity.REQUEST_CODE, PermissionsActivity.PERMISSIONS);
+        } else {
+            setContentView(R.layout.main);
+            setUI();
 
-        AppResCopy.copyResFromAssetsToSD(this);
-        
-        activeTimes = 0;
-        recordingThread = new RecordingThread(handle, new AudioDataSaver());
-        playbackThread = new PlaybackThread();
+            setProperVolume();
 
-        if(record_button!=null){
-            record_button.callOnClick();
+            AppResCopy.copyResFromAssetsToSD(this);
+
+            activeTimes = 0;
+            recordingThread = new RecordingThread(handle, new AudioDataSaver());
+            playbackThread = new PlaybackThread();
+
+            if (record_button != null) {
+                record_button.callOnClick();
+            }
+
+            setGoogleAIY();
         }
-
-        setGoogleAIY();
     }
     
     void showToast(CharSequence msg) {
