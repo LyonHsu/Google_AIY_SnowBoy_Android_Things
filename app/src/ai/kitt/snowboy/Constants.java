@@ -35,7 +35,8 @@ public class Constants {
     // 音频源：音频输入-麦克风
     public static final  int AUDIO_INPUT = MediaRecorder.AudioSource.MIC;//MediaRecorder.AudioSource.VOICE_RECOGNITION
     // 音频通道 单声道
-    public static final  int AUDIO_CHANNEL = AudioFormat.CHANNEL_IN_MONO;
+    public static final  int AUDIO_CHANNEL_IN = AudioFormat.CHANNEL_IN_MONO;
+    public static final  int AUDIO_CHANNEL_OUT = AudioFormat.CHANNEL_OUT_MONO;
     // 音频格式：PCM编码
     public static final int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
     // 采样率

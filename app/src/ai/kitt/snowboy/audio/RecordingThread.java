@@ -113,7 +113,7 @@ public class RecordingThread {
 
 
         AudioFormat mAudioInputFormat = new AudioFormat.Builder()
-                .setChannelMask(Constants.AUDIO_CHANNEL)
+                .setChannelMask(Constants.AUDIO_CHANNEL_IN)
                 .setEncoding(Constants.audioEncoding)
                 .setSampleRate(Constants.mSampleRate)
                 .build();

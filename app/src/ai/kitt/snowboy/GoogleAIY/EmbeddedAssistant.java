@@ -699,7 +699,7 @@ public class EmbeddedAssistant {
                         mEmbeddedAssistant.mAudioInputFormat.getChannelMask(),
                         mEmbeddedAssistant.mAudioInputFormat.getEncoding());
                 mEmbeddedAssistant.mAudioOutputFormat = new AudioFormat.Builder()
-                        .setChannelMask(Constants.AUDIO_CHANNEL)
+                        .setChannelMask(Constants.AUDIO_CHANNEL_OUT)
                         .setEncoding(Constants.audioEncoding)
                         .setSampleRate(mSampleRate)
                         .build();
